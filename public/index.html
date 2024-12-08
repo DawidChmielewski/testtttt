@@ -102,36 +102,34 @@
     </div>
     <div id="trackingDetails"></div>
   </div>
+<script>
+  document.getElementById('trackButton').addEventListener('click', async () => {
+    const trackingNumber = document.getElementById('trackingNumber').value;
+    if (trackingNumber) {
+      // Wyślij zapytanie do backendu na Vercel
+      const response = await fetch(`/api/track?trackingNumber=${trackingNumber}`);
 
-  <script>
-    document.getElementById('trackButton').addEventListener('click', async () => {
-      const trackingNumber = document.getElementById('trackingNumber').value;
-      if (trackingNumber) {
-        // Wyślij zapytanie do backendu
-        const response = await fetch(`http://localhost:3000/track?trackingNumber=${trackingNumber}`);
+      const data = await response.json();
 
-        const data = await response.json();
-
-        const trackingDetailsDiv = document.getElementById('trackingDetails');
-        if (data.success) {
-          let trackingDetailsHTML = '';
-          // Wygenerowanie boxów z danymi paczki
-          data.data.forEach(item => {
-            trackingDetailsHTML += `
-              <div class="tracking-box">
-                <h3>${item.date}</h3>
-                <p>${item.status}</p>
-              </div>
-            `;
-          });
-          trackingDetailsDiv.innerHTML = trackingDetailsHTML;
-        } else {
-          trackingDetailsDiv.innerHTML = `<p>Błąd: ${data.error}</p>`;
-        }
+      const trackingDetailsDiv = document.getElementById('trackingDetails');
+      if (data.success) {
+        let trackingDetailsHTML = '';
+        data.data.forEach(item => {
+          trackingDetailsHTML += `
+            <div class="tracking-box">
+              <h3>${item.date}</h3>
+              <p>${item.status}</p>
+            </div>
+          `;
+        });
+        trackingDetailsDiv.innerHTML = trackingDetailsHTML;
       } else {
-        alert("Proszę podać numer paczki!");
+        trackingDetailsDiv.innerHTML = `<p>Błąd: ${data.error}</p>`;
       }
-    });
+    } else {
+      alert("Proszę podać numer paczki!");
+    }
+  });
   </script>
 </body>
 </html>

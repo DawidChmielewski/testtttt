@@ -2,6 +2,7 @@ const puppeteer = require('puppeteer');
 
 module.exports = async (req, res) => {
   const trackingNumber = req.query.trackingNumber;
+
   if (!trackingNumber) {
     return res.json({ success: false, error: 'Numer przesyłki jest wymagany.' });
   }
