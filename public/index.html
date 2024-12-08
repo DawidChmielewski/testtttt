@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Śledzenie Paczki</title>
+  <style>
+    /* Style ogólne */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      height: 100vh;
+    }
+
+    #main-container {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      width: 100%;
+      max-width: 600px;
+      margin-top: 50px;
+      overflow: hidden;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    #track-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    #trackingNumber {
+      width: 80%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    #trackButton {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    #trackButton:hover {
+      background-color: #45a049;
+    }
+
+    #trackingDetails {
+      margin-top: 20px;
+    }
+
+    .tracking-box {
+      background-color: #f9f9f9;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .tracking-box h3 {
+      margin: 0 0 5px;
+      font-size: 18px;
+      color: #333;
+    }
+
+    .tracking-box p {
+      margin: 5px 0;
+      color: #555;
+    }
+
+    /* Responsywność */
+    @media (max-width: 600px) {
+      #trackingNumber {
+        width: 60%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="main-container">
+    <h1>Śledzenie Paczki</h1>
+    <div id="track-container">
+      <input type="text" id="trackingNumber" placeholder="Podaj numer paczki">
+      <button id="trackButton">Śledź Paczkę</button>
+    </div>
+    <div id="trackingDetails"></div>
+  </div>
+
+  <script>
+    document.getElementById('trackButton').addEventListener('click', async () => {
+      const trackingNumber = document.getElementById('trackingNumber').value;
+      if (trackingNumber) {
+        // Wyślij zapytanie do backendu
+        const response = await fetch(`http://localhost:3000/track?trackingNumber=${trackingNumber}`);
+
+        const data = await response.json();
+
+        const trackingDetailsDiv = document.getElementById('trackingDetails');
+        if (data.success) {
+          let trackingDetailsHTML = '';
+          // Wygenerowanie boxów z danymi paczki
+          data.data.forEach(item => {
+            trackingDetailsHTML += `
+              <div class="tracking-box">
+                <h3>${item.date}</h3>
+                <p>${item.status}</p>
+              </div>
+            `;
+          });
+          trackingDetailsDiv.innerHTML = trackingDetailsHTML;
+        } else {
+          trackingDetailsDiv.innerHTML = `<p>Błąd: ${data.error}</p>`;
+        }
+      } else {
+        alert("Proszę podać numer paczki!");
+      }
+    });
+  </script>
+</body>
+</html>
